@@ -1,5 +1,4 @@
 from sklearn import cross_validation,metrics
-from sklearn import svm
 import numpy as np
 from sklearn import datasets
 from sklearn.pipeline import Pipeline
