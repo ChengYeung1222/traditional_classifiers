@@ -1,4 +1,4 @@
-from sklearn import cross_validation, metrics
+from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -16,25 +16,31 @@ train_x, test_x, train_y, test_y = train_test_split(X, y, test_size=0.2, random_
 
 rbf_kernel_svm_clf = Pipeline([
     ("scaler", StandardScaler()),
-    ("svm_clf", SVC(kernel="rbf", gamma=5., C=5e+2))
+    ("svm_clf", SVC(kernel="rbf", gamma=.1, C=.5,probability=True))
 ])
 
 rbf_kernel_svm_clf.fit(train_x, train_y)
 
-pred = rbf_kernel_svm_clf.predict(test_x)
-predict_prob_y = rbf_kernel_svm_clf.decision_function(test_x)
+predict_prob_y = rbf_kernel_svm_clf.predict_proba(test_x)
 print(predict_prob_y)
 print(test_y)
 # end svm ,start metrics
-test_auc = metrics.roc_auc_score(test_y, predict_prob_y)
+predict_prob_train=rbf_kernel_svm_clf.predict_proba(train_x)
+train_auc = metrics.roc_auc_score(train_y, predict_prob_train[:,1])
+print(train_auc)
+test_auc = metrics.roc_auc_score(test_y, predict_prob_y[:,1])
 print(test_auc)
-# gamma=0.5,C=1e-2:0.78924081671061
-# gamma=1., C=1e-1:0.7982063719269364
-# gamma=.5, C=1.:0.799752808053463
-# gamma=1., C=1.:0.8054106651355691
-# gamma=5., C=1.:0.814152346449259
-# gamma=5., C=10.:0.8345287493126735
-# gamma=5., C=100.:0.8640346058384555
-# gamma=5., C=1e+3:0.8711179140743007
-# gamma=10., C=1e+3:0.8397034420483274
-# gamma=5., C=5e+2:0.8714426087875935
+
+# gamma=1., C=1e+1
+# 0.8959166278361342
+# 0.8504614996165858
+# gamma = .5, C = 1e+1
+# 0.8653428859061038
+# 0.8287439240819363
+# gamma=.5, C=1.
+# 0.8406477906814893
+# 0.8089351063896111
+# gamma=.1, C=.5
+# 0.7783610614230418
+# 0.7679773401246459
+
