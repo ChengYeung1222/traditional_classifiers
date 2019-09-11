@@ -22,13 +22,25 @@ tree_clf = Pipeline([
 ])
 tree_clf.fit(train_x, train_y)
 
-pred = tree_clf.predict(test_x)
+# pred = tree_clf.predict(test_x)
 predict_prob_y = tree_clf.predict_proba(test_x)
 print(predict_prob_y)
 print(test_y)
 # end dt ,start metrics
-test_auc = metrics.roc_auc_score(test_y, pred)
+test_auc = metrics.roc_auc_score(test_y, predict_prob_y[:, 1])
 print(test_auc)
+
+# ---------------------------------------#
+output_file = open("./DYGZ/label_prob_DYGZ_DecisionTrees.csv", 'w')
+predictions = []
+# output_file.write("Prediction , " + "Actual , " + "Accuracy" + '\n')
+known_preds = tree_clf.predict_proba(X)
+for i, unknown_pred in enumerate(known_preds):
+    pred_prob = known_preds[:, 1]
+    # pred_label = unknown_pred.argmax(axis=0)
+    predictions.append(pred_prob)
+    output_file.write(str(i) + ', ' + str(y[i]) + ', ' + str(pred_prob[i]) + '\n')
+output_file.close()
 
 # export_graphviz(
 #         tree_clf,
