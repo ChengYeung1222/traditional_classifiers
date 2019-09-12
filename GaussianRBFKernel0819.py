@@ -31,6 +31,16 @@ print(train_auc)
 test_auc = metrics.roc_auc_score(test_y, predict_prob_y[:,1])
 print(test_auc)
 
+output_file = open("./DYGZ/label_prob_DYGZ_RBFSVM.csv", 'w')
+predictions = []
+# output_file.write("Prediction , " + "Actual , " + "Accuracy" + '\n')
+known_preds = rbf_kernel_svm_clf.predict_proba(X)
+for i, unknown_pred in enumerate(known_preds[:,1]):
+    pred_prob = known_preds
+    # pred_label = unknown_pred.argmax(axis=0)
+    predictions.append(pred_prob)
+    output_file.write(str(i) + ', ' + str(y[i]) + ', ' + str(pred_prob[i,1]) + '\n')
+output_file.close()
 # gamma=1., C=1e+1
 # 0.8959166278361342
 # 0.8504614996165858
